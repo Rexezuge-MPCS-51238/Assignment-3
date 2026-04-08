@@ -1,12 +1,12 @@
 "use client";
 
-import { useState, useEffect } from "react";
+import { Suspense, useState, useEffect } from "react";
 import { useSearchParams } from "next/navigation";
 import RecipeCard from "@/components/recipe-card";
 import CategoryList from "@/components/category-list";
 import { MealSummary } from "@/lib/types";
 
-export default function BrowsePage() {
+function BrowseContent() {
   const searchParams = useSearchParams();
   const category = searchParams.get("category");
   const [meals, setMeals] = useState<MealSummary[]>([]);
@@ -53,5 +53,23 @@ export default function BrowsePage() {
         </div>
       )}
     </div>
+  );
+}
+
+export default function BrowsePage() {
+  return (
+    <Suspense
+      fallback={
+        <div className="mx-auto max-w-6xl px-4 py-8">
+          <div className="grid grid-cols-1 gap-4 sm:grid-cols-2 lg:grid-cols-4">
+            {Array.from({ length: 8 }).map((_, i) => (
+              <div key={i} className="h-60 animate-pulse rounded-xl bg-gray-200" />
+            ))}
+          </div>
+        </div>
+      }
+    >
+      <BrowseContent />
+    </Suspense>
   );
 }
